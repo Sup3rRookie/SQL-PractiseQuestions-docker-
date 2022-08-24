@@ -21,3 +21,11 @@ from
   ) x
 where x.rank = 1
 group by x.customer_id, x.product_name
+
+-- What is the most purchased item on the menu and how many times was it purchased by all customers?
+select  m.product_name,  count(m.product_id) as num_of_items
+from sales s
+join menu m on s.product_id = m.product_id
+group by 1
+order by num_of_items desc
+limit 1
