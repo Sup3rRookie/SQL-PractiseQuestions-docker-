@@ -69,3 +69,18 @@ select f.customer_id , f.product_id, m.product_name, f.order_date, f.rank
 from food_order_cte f
 left join dannys_diner.menu m on f.product_id = m.product_id
 where rank = 1
+
+-- q7.Which item was purchased just before the customer became a member?
+WITH food_order_cte as (
+  select s.customer_id,s.product_id, s.order_date, m.join_date, dense_rank() over(partition by s.customer_id order by s.order_date) as rank
+  from  dannys_diner.sales s
+  join dannys_diner.members m on s.customer_id = m.customer_id
+  where s.order_date < m.join_date
+  group by 1,2,3,4
+  order by order_date
+)
+
+select f.customer_id , m.product_name, f.order_date, f.rank
+from food_order_cte f
+left join dannys_diner.menu m on f.product_id = m.product_id
+where rank = 1
