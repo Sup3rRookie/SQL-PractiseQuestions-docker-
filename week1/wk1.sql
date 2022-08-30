@@ -29,3 +29,19 @@ join menu m on s.product_id = m.product_id
 group by 1
 order by num_of_items desc
 limit 1
+
+-- Which item was the most popular for each customer?
+select customer_id , product_name
+from
+(
+  select s.customer_id, m.product_name, count(m.product_id), rank () over (partition by customer_id order by count(s.customer_id) desc) as rank
+  from
+    sales s
+    join menu m on s.product_id = m.product_id
+  group by
+    1,
+    2
+  order by
+    s.customer_id
+) x
+where x.rank = 1
