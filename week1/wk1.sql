@@ -45,3 +45,28 @@ from
     s.customer_id
 ) x
 where x.rank = 1
+
+-- Using CTE
+WITH top_selling_food_cte as (
+  select
+    s.customer_id,
+    m.product_name,
+    count(m.product_id) as count_food_ordered,
+    rank () over (
+      partition by customer_id
+      order by
+        count(s.customer_id) desc
+    ) as rank
+  from
+    sales s
+    join menu m on s.product_id = m.product_id
+  group by
+    1,
+    2
+  order by
+    s.customer_id
+)
+
+select customer_id , product_name , count_food_ordered
+from top_selling_food_cte
+where rank = 1
