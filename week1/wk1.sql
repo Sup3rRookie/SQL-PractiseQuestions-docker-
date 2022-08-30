@@ -84,3 +84,12 @@ select f.customer_id , m.product_name, f.order_date, f.rank
 from food_order_cte f
 left join dannys_diner.menu m on f.product_id = m.product_id
 where rank = 1
+
+-- q8.What is the total items and amount spent for each member before they became a member?
+select s.customer_id , sum(m.price) as total_sales
+from dannys_diner.sales s
+join dannys_diner.menu m on s.product_id = m.product_id
+join dannys_diner.members mb on s.customer_id = mb.customer_id
+where s.order_date < mb.join_date
+group by 1
+order by 1
