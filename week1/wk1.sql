@@ -108,3 +108,21 @@ from
   order by customer_id) x
 group by 1
 order by total_points desc
+
+-- alternate solution using CTE
+WITH total_points_cte as (
+  select s.customer_id, m.price, m.product_name,
+  case
+    when product_name = 'curry' then (price*10)
+    when product_name = 'sushi' then (price*10*2)
+    when product_name = 'ramen' then (price*10)
+  end as points
+  from dannys_diner.sales s
+  join dannys_diner.menu m on s.product_id = m.product_id
+  order by customer_id
+)
+
+select customer_id, sum(points) as total_points
+from total_points_cte
+group by 1
+order by 2 desc
