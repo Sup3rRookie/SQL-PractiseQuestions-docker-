@@ -18,3 +18,25 @@ SELECT count(c.order_id) as total_order, p.pizza_name
 FROM customer_orders c
 join pizza_names p on p.pizza_id = c.pizza_id
 group by 2
+
+-- q5.How many Vegetarian and Meatlovers were ordered by each customer?
+select customer_id,pizza_name, count(order_id)
+from pizza_names p
+join customer_orders c on p.pizza_id = c.pizza_id
+group by 1,2
+order by customer_id
+
+-- q6.What was the maximum number of pizzas delivered in a single order?
+with total_order_cte as (
+  select c.order_id, c.customer_id, count(c.pizza_id) as total_order
+  from customer_orders c
+  join runner_orders r on c.order_id = r.order_id
+  group by 1,2
+  order by 1,2
+)
+
+select *
+from total_order_cte
+order by total_order desc
+fetch first 1 rows only
+
