@@ -40,3 +40,14 @@ from total_order_cte
 order by total_order desc
 fetch first 1 rows only
 
+-- q7.For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
+select customer_id, changes, COUNT(changes) as no_of_changes
+from (
+ select *,
+ CASE
+     WHEN exclusions IS NOT NULL OR extras IS NOT NULL THEN'Y'
+     WHEN exclusions IS NULL AND extras IS NULL THEN 'N'
+     END AS changes
+from customer_orders) as t
+group by changes, customer_id;
+
